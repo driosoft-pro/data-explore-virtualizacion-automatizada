@@ -165,4 +165,5 @@ Proyecto educativo bajo licencia **MIT**. Uso libre con fines de aprendizaje.
 - **Daniel David Garcia Restrepo** — 
 - **Luisa FernandaMuñoz Cardona** — 
 - **Dana Isabella Mosquera Mosquera** — 
+  
   **Año:** 2025
