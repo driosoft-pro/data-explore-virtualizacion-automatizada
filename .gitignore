@@ -1,0 +1,73 @@
+# === Git Ignore para Proyecto DataExplorer ===
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos temporales y logs
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Archivos de entorno
+.env
+*.secret
+secrets.yml
+
+# Archivos de salida o backups
+*.tar.gz
+*.zip
+*.tar
+*.7z
+*.rar
+
+# Archivos de compilación o caché
+__pycache__/
+*.pyc
+*.pyo
+*.class
+
+# Configuración de IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Directorios de Vagrant
+.vagrant/
+.vagrant.d/
+
+# Archivos de VirtualBox
+*.vdi
+*.vbox
+*.vbox-prev
+
+# Directorios de Ansible temporales
+*.retry
+ansible.log
+
+# Archivos de ejecución o provisionamiento
+*.out
+*.pid
+
+# Archivos y carpetas del sistema Linux
+lost+found/
+ehthumbs.db
+Icon?
+
+# Archivos de compilación de documentación
+/build/
+/dist/
+
+# Archivos específicos de proyecto
+inventory/*.ini.backup
+roles/**/files/
+roles/**/templates/*.bak
+
+# Archivos personales o locales
+notes.txt
+*.local
+*.old
+*.orig
