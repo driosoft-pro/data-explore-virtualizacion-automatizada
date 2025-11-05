@@ -13,7 +13,7 @@ Este entorno se compone de **tres máquinas virtuales** interconectadas en la mi
 
 ---
 
-## 🖥️ Infraestructura de Red
+## Infraestructura de Red
 
 | IP             | Nombre / Rol | Servicios Instalados               |
 | -------------- | ------------ | ---------------------------------- |
@@ -23,7 +23,7 @@ Este entorno se compone de **tres máquinas virtuales** interconectadas en la mi
 
 ---
 
-## ⚙️ Requisitos Previos
+## Requisitos Previos
 
 - **Sistema Operativo:** Windows, Linux o macOS
 - **Software necesario:**
@@ -35,10 +35,13 @@ Este entorno se compone de **tres máquinas virtuales** interconectadas en la mi
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 DataExplorer/
+├─ docs/
+│  ├─ proyectoFinal.pdf
+│  └─ RequerimientosProyectoFinalDataExplorer.pdf
 ├─ Vagrantfile
 ├─ provisioning/
 │  ├─ inventory/
@@ -121,7 +124,7 @@ ansible-playbook -i inventory/hosts.ini site.yml
 
 ---
 
-## 🔍 Verificación de Servicios
+## Verificación de Servicios
 
 | Servicio                | Dirección                        | Descripción                          |
 | ----------------------- | -------------------------------- | ------------------------------------ |
@@ -162,8 +165,8 @@ Proyecto educativo bajo licencia **MIT**. Uso libre con fines de aprendizaje.
 
 - **Deyton Riasco Ortiz** — driosoftpro@gmail.com
 - **Samuel Izquierdo Bonilla** — samuelizquierdo98@gmail.com
-- **Daniel David Garcia Restrepo** — 
-- **Luisa FernandaMuñoz Cardona** — 
-- **Dana Isabella Mosquera Mosquera** — 
-  
+- **Daniel David Garcia Restrepo** —
+- **Luisa FernandaMuñoz Cardona** —
+- **Dana Isabella Mosquera Mosquera** —
+
   **Año:** 2025
