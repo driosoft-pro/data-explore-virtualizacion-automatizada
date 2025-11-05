@@ -1,0 +1,8 @@
+# provisioning/group_vars/monitor.yml
+prometheus_port: 9090
+grafana_port: 3000
+# Config de Grafana (credenciales iniciales; grafana pedirá cambio al primer login)
+grafana_admin_user: admin
+grafana_admin_password: admin
+# Prometheus targets (normalmente heredados de group_vars/all.yml).
+# Puedes sobreescribir aquí para monitor si lo requieres.

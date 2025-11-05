@@ -1,0 +1,5 @@
+# provisioning/group_vars/server.yml
+nginx_listen_port: 80
+node_exporter_port: 9100
+server_index_title: "Servidor Nginx - DataExplorer"
+server_index_body: "Desplegado con Ansible (rol nginx)."

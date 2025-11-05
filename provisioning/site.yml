@@ -1,0 +1,12 @@
+- hosts: server
+  become: true
+  roles:
+    - nginx
+    - node_exporter
+
+- hosts: monitor
+  become: true
+  roles:
+    - prometheus
+    - node_exporter
+    - grafana

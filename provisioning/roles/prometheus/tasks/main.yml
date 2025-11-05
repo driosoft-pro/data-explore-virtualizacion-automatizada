@@ -1,0 +1,29 @@
+# provisioning/roles/prometheus/tasks/main.yml
+---
+- name: Instalar Prometheus
+  apt:
+    name: prometheus
+    state: present
+    update_cache: true
+  become: true
+- name: Plantillar /etc/prometheus/prometheus.yml
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  notify: Restart Prometheus
+- name: Asegurar Prometheus habilitado y corriendo
+  service:
+    name: prometheus
+    state: started
+    enabled: true
+  become: true
+# Handlers
+- name: Restart Prometheus
+  ansible.builtin.service:
+    name: prometheus
+    state: restarted
+  become: true
