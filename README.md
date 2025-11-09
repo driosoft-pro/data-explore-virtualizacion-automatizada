@@ -166,7 +166,7 @@ Proyecto educativo bajo licencia **MIT**. Uso libre con fines de aprendizaje.
 - **Deyton Riasco Ortiz** — driosoftpro@gmail.com
 - **Samuel Izquierdo Bonilla** — samuelizquierdo98@gmail.com
 - **Daniel David Garcia Restrepo** —
-- **Luisa FernandaMuñoz Cardona** —
+- **Luisa FernandaMuñoz Cardona** — luisafercm4@gmail.com
 - **Dana Isabella Mosquera Mosquera** —
 
   **Año:** 2025
