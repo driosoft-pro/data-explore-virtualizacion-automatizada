@@ -83,6 +83,9 @@ DataExplorer/
 
 ```bash
 git clone git@github.com:driosoft-pro/data-explore-virtualizacion-automatizada.git
+```
+
+```bash
 cd data-explore-virtualizacion-automatizada
 ```
 
@@ -124,6 +127,9 @@ vagrant ssh-config control,server,monitor | Out-File -Encoding ascii .vagrant/ss
 
 ```bash
 ansible-inventory -i provisioning/inventory/hosts.ini --graph
+```
+
+```bash
 ansible -i provisioning/inventory/hosts.ini all -m ping
 ```
 
@@ -131,6 +137,9 @@ ansible -i provisioning/inventory/hosts.ini all -m ping
 
 ```bash
 ansible-playbook -i provisioning/inventory/hosts.ini provisioning/site.yml -b --check --diff
+```
+
+```bash
 ansible-playbook -i provisioning/inventory/hosts.ini provisioning/site.yml -b
 ```
 
@@ -150,8 +159,17 @@ ansible-playbook -i provisioning/inventory/hosts.ini provisioning/verify.yml -b
 
 ```bash
 vagrant status
+```
+
+```bash
 vagrant reload
+```
+
+```bash
 vagrant halt
+```
+
+```bash
 vagrant destroy -f
 ```
 
@@ -198,8 +216,8 @@ Proyecto educativo bajo licencia **MIT**. Uso libre con fines de aprendizaje.
 
 - **Deyton Riasco Ortiz** — driosoftpro@gmail.com
 - **Samuel Izquierdo Bonilla** — samuelizquierdo98@gmail.com
-- **Daniel David Garcia Restrepo** —
-- **Luisa FernandaMuñoz Cardona** —
-- **Dana Isabella Mosquera Mosquera** —
+- **Daniel David Garcia Restrepo** — daniel_dav.garcia@uao.edu.co
+- **Luisa FernandaMuñoz Cardona** — luisa_fer.munoz@uao.edu.co
+- **Dana Isabella Mosquera Mosquera** — danna_isa.mosquera@uao.edu.co
 
   **Año:** 2025
