@@ -7,7 +7,7 @@ grafana_port: 3000
 node_exporter_port: 9100
 # Targets de Node Exporter (IPs de server y monitor)
 prometheus_targets_node_exporter:
-  - "192.168.10.2:9100"
-  - "192.168.10.3:9100"
-# (Opcional) si agregas nginx-prometheus-exporter en 'server', define targets:
+  - "192.168.10.11:9100" # server
+  - "192.168.10.12:9100" # monitor
+# Al agregas nginx-prometheus-exporter en 'server', define targets:
 prometheus_targets_nginx: [] # p.ej.: ["192.168.10.2:9113"]

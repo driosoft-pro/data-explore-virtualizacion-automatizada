@@ -1,32 +1,30 @@
-# provisioning/roles/nginx/tasks/main.yml
----
 - name: Instalar Nginx
   apt:
     name: nginx
     state: present
-    update_cache: true
+    update_cache: yes
   become: true
+
 - name: Asegurar servicio Nginx habilitado y corriendo
   service:
     name: nginx
     state: started
     enabled: true
   become: true
+
 - name: Plantilla de index.html (simple)
   copy:
     dest: /var/www/html/index.html
     content: |
       <!doctype html>
       <html>
-        <head><meta charset="utf-8"><title>{{ server_index_title | default('Nginx')}}</title></head>
-        <body>
-          <h1>{{ server_index_title | default('Nginx') }}</h1>
-          <p>{{ server_index_body | default('Bienvenido a DataExplorer') }}</p>
-        </body>
+      <head><meta charset="utf-8"><title>DataExplorer</title></head>
+      <body>
+        <h1>DataExplorer - Nginx OK</h1>
+        <p>Servidor: {{ inventory_hostname }}</p>
+      </body>
       </html>
     owner: www-data
     group: www-data
     mode: "0644"
   become: true
-# Nota: Si deseas métricas de Nginx, instala 'nginx-prometheus-exporter' desde binarioo repositorio externo.
-# En ese caso agrega el job a Prometheus (ver prometheus.yml.j2) y abre el puerto 9113.

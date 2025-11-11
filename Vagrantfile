@@ -2,49 +2,54 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  BOX = "ubuntu/jammy64"
+  provider = ENV["VAGRANT_DEFAULT_PROVIDER"] || ENV["VAGRANT_PROVIDER"] || "virtualbox"
 
-  # --- CONTROL ---
+  BOXES = {
+    "virtualbox" => "ubuntu/jammy64",     # Oficial Ubuntu: trae provider virtualbox
+    "libvirt"    => "generic/ubuntu2204", # Box multi-provider que sí trae libvirt
+  }
+
+  box = BOXES.fetch(provider) { "ubuntu/jammy64" }
+
+  # -------- CONTROL --------
   config.vm.define "control" do |c|
-    c.vm.box = BOX
+    c.vm.box = box
     c.vm.hostname = "control.local"
-    c.vm.network "private_network", ip: "192.168.10.1"
+    c.vm.network "private_network", ip: "192.168.10.10"
+
     c.vm.provider "virtualbox" do |vb|
-      vb.memory = 1024
-      vb.cpus   = 2
+      vb.memory = 1024; vb.cpus = 2; vb.name = "DE-control"
     end
-
-    # Instalar Ansible dentro de la VM control
-    c.vm.provision "shell", inline: <<-SHELL
-      apt-get update -y
-      apt-get install -y software-properties-common
-      apt-add-repository --yes --update ppa:ansible/ansible
-      apt-get install -y ansible git
-    SHELL
-
-    # Compartir el directorio del proyecto para ejecutar ansible desde control
-    c.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+    c.vm.provider "libvirt" do |lv|
+      lv.memory = 1024; lv.cpus = 2; lv.title = "DE-control"
+    end
   end
 
-  # --- SERVER ---
+  # -------- SERVER --------
   config.vm.define "server" do |s|
-    s.vm.box = BOX
+    s.vm.box = box
     s.vm.hostname = "server.local"
-    s.vm.network "private_network", ip: "192.168.10.2"
+    s.vm.network "private_network", ip: "192.168.10.11"
+
     s.vm.provider "virtualbox" do |vb|
-      vb.memory = 1024
-      vb.cpus   = 2
+      vb.memory = 2048; vb.cpus = 2; vb.name = "DE-server"
+    end
+    s.vm.provider "libvirt" do |lv|
+      lv.memory = 2048; lv.cpus = 2; lv.title = "DE-server"
     end
   end
 
-  # --- MONITOR ---
+  # -------- MONITOR --------
   config.vm.define "monitor" do |m|
-    m.vm.box = BOX
+    m.vm.box = box
     m.vm.hostname = "monitor.local"
-    m.vm.network "private_network", ip: "192.168.10.3"
+    m.vm.network "private_network", ip: "192.168.10.12"
+
     m.vm.provider "virtualbox" do |vb|
-      vb.memory = 2048
-      vb.cpus   = 2
+      vb.memory = 3072; vb.cpus = 2; vb.name = "DE-monitor"
+    end
+    m.vm.provider "libvirt" do |lv|
+      lv.memory = 3072; lv.cpus = 2; lv.title = "DE-monitor"
     end
   end
 end
