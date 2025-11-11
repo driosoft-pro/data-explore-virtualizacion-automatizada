@@ -1,52 +1,39 @@
-# provisioning/roles/grafana/tasks/main.yml
----
-- name: Añadir clave y repo de Grafana
-  apt_key:
+- name: Paquetes base https
+  apt:
+    name:
+      - apt-transport-https
+      - software-properties-common
+      - gnupg
+      - ca-certificates
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Importar llave GPG de Grafana
+  ansible.builtin.get_url:
     url: https://packages.grafana.com/gpg.key
-    state: present
+    dest: /usr/share/keyrings/grafana.key
+    mode: "0644"
   become: true
-- name: Añadir repositorio Grafana OSS
-  apt_repository:
-    repo: "deb https://packages.grafana.com/oss/deb stable main"
-    state: present
+
+- name: Añadir repo de Grafana
+  copy:
+    dest: /etc/apt/sources.list.d/grafana.list
+    content: |
+      deb [signed-by=/usr/share/keyrings/grafana.key] https://packages.grafana.com/oss/deb stable main
+    mode: "0644"
   become: true
+
 - name: Instalar Grafana
   apt:
     name: grafana
     state: present
-    update_cache: true
+    update_cache: yes
   become: true
-- name: Configurar admin_user y admin_password (opcional)
-  lineinfile:
-    path: /etc/grafana/grafana.ini
-    regexp: "^;?admin_user ="
-    line: "admin_user = {{ grafana_admin_user | default('admin') }}"
-  become: true
-- name: Configurar admin_password (opcional)
-  lineinfile:
-    path: /etc/grafana/grafana.ini
-    regexp: "^;?admin_password ="
-    line: "admin_password = {{ grafana_admin_password | default('admin') }}"
-  become: true
-- name: Asegurar Grafana habilitado y corriendo
+
+- name: Grafana habilitado y corriendo
   service:
     name: grafana-server
     state: started
     enabled: true
-  become: true
-# (Opcional) Provisionar datasource Prometheus automáticamente:
-- name: Crear datasource Prometheus
-  copy:
-    dest: /etc/grafana/provisioning/datasources/prometheus.yml
-    content: |
-      apiVersion: 1
-      datasources:
-        - name: Prometheus
-          type: prometheus
-          access: proxy
-          url: http://localhost:9090
-          isDefault: true
-    owner: root
-    group: root
-    mode: "0644"
   become: true

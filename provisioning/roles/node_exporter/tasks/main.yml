@@ -1,13 +1,13 @@
-# provisioning/roles/node_exporter/tasks/main.yml
----
 - name: Instalar node_exporter
   apt:
     name: prometheus-node-exporter
     state: present
-    update_cache: true
+    update_cache: yes
   become: true
-- name: Asegurar node_exporter corriendo
+
+- name: Asegurar node_exporter habilitado y corriendo
   service:
     name: prometheus-node-exporter
     state: started
-    enabled: tr
+    enabled: true
+  become: true
