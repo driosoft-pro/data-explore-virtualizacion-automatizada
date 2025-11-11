@@ -1,0 +1,29 @@
+- hosts: server
+  gather_facts: no
+  tasks:
+    - name: Nginx responde 200
+      uri:
+        url: "http://localhost:{{ nginx_listen_port | default(80) }}/"
+        status_code: 200
+    - name: Node exporter expone métrica
+      uri:
+        url: "http://localhost:{{ node_exporter_port | default(9100) }}/metrics"
+        status_code: 200
+        return_content: yes
+
+- hosts: monitor
+  gather_facts: no
+  tasks:
+    - name: Prometheus ready
+      uri:
+        url: "http://localhost:{{ prometheus_port | default(9090) }}/-/ready"
+        status_code: 200
+      register: prom_ready
+      retries: 10
+      delay: 3
+      until: prom_ready.status == 200
+
+    - name: Grafana login disponible
+      uri:
+        url: "http://localhost:{{ grafana_port | default(3000) }}/login"
+        status_code: 200
