@@ -119,8 +119,15 @@ vagrant ssh-config control server monitor | save -f .vagrant/ssh-config
 
 - PowerShell:
 
-```powershell
-vagrant ssh-config control,server,monitor | Out-File -Encoding ascii .vagrant/ssh-config
+(Se debe ejecutar en 3 pasos, usando -Append para añadir la información)
+
+```vagrant ssh-config control | Out-File -Encoding ascii .vagrant/ssh-config
+```
+
+```vagrant ssh-config server | Out-File -Encoding ascii -Append .vagrant/ssh-config
+```
+
+```vagrant ssh-config monitor | Out-File -Encoding ascii -Append .vagrant/ssh-config
 ```
 
 ### 3) Validar inventario y conectividad
