@@ -1,0 +1,16 @@
+- name: Instalar Blackbox Exporter (paquete Ubuntu)
+  apt:
+    name: prometheus-blackbox-exporter
+    state: present
+    update_cache: yes
+
+- name: Asegurar blackbox exporter habilitado y corriendo
+  systemd:
+    name: prometheus-blackbox-exporter
+    enabled: yes
+    state: started
+
+- name: Verificar que blackbox exporter está escuchando
+  uri:
+    url: "http://localhost:{{ blackbox_exporter_port | default(9115) }}/metrics"
+    status_code: 200

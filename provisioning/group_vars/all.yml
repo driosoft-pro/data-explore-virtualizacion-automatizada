@@ -1,13 +1,23 @@
-# provisioning/group_vars/all.yml
 nginx_listen_port: 80
+
 # Prometheus/Grafana puertos
 prometheus_port: 9090
 grafana_port: 3000
+
 # Node exporter puertos (por defecto: 9100)
 node_exporter_port: 9100
+
+# Blackbox exporter
+blackbox_exporter_port: 9115
+
 # Targets de Node Exporter (IPs de server y monitor)
 prometheus_targets_node_exporter:
   - "192.168.10.11:9100" # server
   - "192.168.10.12:9100" # monitor
+
+# URLs que quiero probar con Blackbox
+prometheus_targets_blackbox:
+  - "http://192.168.10.11/" # Nginx en server
+
 # Al agregas nginx-prometheus-exporter en 'server', define targets:
-prometheus_targets_nginx: [] # p.ej.: ["192.168.10.2:9113"]
+prometheus_targets_nginx: []

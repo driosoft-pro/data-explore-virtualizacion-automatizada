@@ -1,29 +1,53 @@
 - hosts: server
-  gather_facts: no
+  become: false
   tasks:
     - name: Nginx responde 200
       uri:
-        url: "http://localhost:{{ nginx_listen_port | default(80) }}/"
+        url: "http://localhost/"
         status_code: 200
+
     - name: Node exporter expone métrica
       uri:
-        url: "http://localhost:{{ node_exporter_port | default(9100) }}/metrics"
+        url: "http://localhost:9100/metrics"
         status_code: 200
-        return_content: yes
+        return_content: false
 
 - hosts: monitor
-  gather_facts: no
+  become: false
   tasks:
     - name: Prometheus ready
       uri:
-        url: "http://localhost:{{ prometheus_port | default(9090) }}/-/ready"
+        url: "http://localhost:9090/-/ready"
         status_code: 200
-      register: prom_ready
-      retries: 10
-      delay: 3
-      until: prom_ready.status == 200
 
     - name: Grafana login disponible
       uri:
-        url: "http://localhost:{{ grafana_port | default(3000) }}/login"
+        url: "http://localhost:3000/login"
         status_code: 200
+
+    - name: Blackbox exporter expone /metrics
+      uri:
+        url: "http://localhost:9115/metrics"
+        status_code: 200
+
+- hosts: control
+  become: true
+  tasks:
+    - name: Ejecutar prueba de carga JMeter contra Nginx
+      command: >
+        jmeter -n
+        -t /opt/jmeter/tests/dataexplorer-nginx.jmx
+        -l /opt/jmeter/tests/results.jtl
+      register: jmeter_run
+      changed_when: false
+      failed_when: jmeter_run.rc != 0
+
+    - name: Verificar que el archivo de resultados JMeter existe
+      stat:
+        path: /opt/jmeter/tests/results.jtl
+      register: jmeter_results
+
+    - name: Asegurar que la prueba generó resultados
+      assert:
+        that:
+          - jmeter_results.stat.exists

@@ -1,6 +1,6 @@
 # Proyecto Final · DataExplorer
 
-Vagrant + Ansible · Nginx · Prometheus · Grafana · Node Exporter
+Vagrant + Ansible · Nginx · Prometheus · Grafana · Node Exporter · Blackbox Exporter · JMeter
 
 ## Descripción General
 
@@ -8,8 +8,10 @@ El proyecto **DataExplorer** consiste en la creación de un entorno de virtualiz
 
 - **Nginx** como servidor web.
 - **Prometheus** para la recolección de métricas.
-- **Grafana** para la visualización de datos.
+- **Grafana** para la visualización de datos y dashboards provisionados automáticamente.
 - **Node Exporter** para obtener métricas del sistema.
+- **Blackbox Exporter** para medir latencia HTTP del servidor Nginx.
+- **JMeter** para pruebas de carga automatizadas desde el nodo `control`.
 
 Este entorno se compone de **tres máquinas virtuales** interconectadas en la misma red privada.
 
@@ -17,11 +19,11 @@ Este entorno se compone de **tres máquinas virtuales** interconectadas en la mi
 
 ## Infraestructura de Red
 
-| IP              | Nombre / Rol | Servicios Instalados               |
-| --------------- | ------------ | ---------------------------------- |
-| `192.168.10.10` | control      | Ansible, Playbooks                 |
-| `192.168.10.11` | server       | Nginx, Node Exporter               |
-| `192.168.10.12` | monitor      | Prometheus, Node Exporter, Grafana |
+| IP              | Nombre / Rol | Servicios Instalados                                  |
+| --------------- | ------------ | ----------------------------------------------------- |
+| `192.168.10.10` | control      | Ansible, JMeter (pruebas de carga)                    |
+| `192.168.10.11` | server       | Nginx, Node Exporter                                  |
+| `192.168.10.12` | monitor      | Prometheus, Node Exporter, Grafana, Blackbox Exporter |
 
 ---
 
@@ -55,7 +57,7 @@ DataExplorer/
 │  ├─ inventory/
 │  │  └─ hosts.ini
 │  ├─ group_vars/
-│  │  ├─ all.yml                 # puertos y targets (node_exporter)
+│  │  ├─ all.yml                 # puertos y targets (node_exporter, blackbox)
 │  │  ├─ server.yml
 │  │  └─ monitor.yml
 │  ├─ roles/
@@ -67,12 +69,19 @@ DataExplorer/
 │  │  │  ├─ tasks/main.yml
 │  │  │  ├─ templates/prometheus.yml.j2
 │  │  │  └─ handlers/main.yml
-│  │  └─ grafana/
-│  │     └─ tasks/main.yml
-│  ├─ site.yml                   # play principal (server / monitor)
-│  └─ verify.yml                 # PRUEBAS automáticas (URI checks)
+│  │  ├─ grafana/
+│  │  │  ├─ tasks/main.yml
+│  │  │  └─ files/
+│  │  │     ├─ dashboards.yml
+│  │  │     └─ dashboards/dataexplorer-dashboard.json
+│  │  ├─ blackbox_exporter/
+│  │  │  └─ tasks/main.yml
+│  │  └─ jmeter/
+│  │     ├─ tasks/main.yml
+│  │     └─ files/dataexplorer-nginx.jmx
+│  ├─ site.yml                   # play principal (control / server / monitor)
+│  └─ verify.yml                 # PRUEBAS automáticas (URI checks + JMeter)
 └─ README.md
-
 ```
 
 ---
@@ -82,7 +91,7 @@ DataExplorer/
 ### Clonar Repositorio y Proyecto
 
 ```
-git clone git@github.com:driosoft-pro/data-explore-virtualizacion-automatizada.git
+git clone https://github.com/driosoft-pro/data-explore-virtualizacion-automatizada.git
 ```
 
 ```
@@ -169,17 +178,41 @@ ansible -i provisioning/inventory/hosts.ini all -m ping
 ansible-playbook -i provisioning/inventory/hosts.ini provisioning/site.yml -b
 ```
 
+#### Esto instala y configura:
+
+- control: JMeter CLI y plan de prueba.
+- server: Nginx + Node Exporter.
+- monitor: Prometheus + Node Exporter + Grafana + Blackbox Exporter.
+- Dashboard de Grafana provisionado automáticamente (DataExplorer - Nginx / Node / Prometheus).
+
 ### 5) Verificar servicios
 
 ```
 ansible-playbook -i provisioning/inventory/hosts.ini provisioning/verify.yml -b
 ```
 
+#### Este playbook verifica:
+
+- Nginx responde 200 en server.
+- Node Exporter expone métricas en server y monitor.
+- Prometheus está listo en monitor.
+- Grafana está disponible en monitor.
+- Blackbox Exporter expone /metrics en monitor.
+- JMeter ejecuta una prueba de carga desde control contra http://192.168.10.11/ y genera results.jtl.
+
 ### 6) Probar en el navegador
 
 - Nginx: http://192.168.10.11/
 - Prometheus: http://192.168.10.12:9090/
 - Grafana: http://192.168.10.12:3000/ (admin/admin)
+
+### El dashboard DataExplorer se carga automáticamente en Grafana y muestra:
+
+- Uso de CPU (%)
+- Uso de RAM (%)
+- Load Average (1/5/15)
+- Tráfico de red RX/TX (Bytes/s)
+- Latencia HTTP (probe_duration_seconds) medida con Blackbox Exporter.
 
 ## Comandos útiles
 
@@ -203,32 +236,45 @@ vagrant destroy -f
 
 ## Verificación de Servicios
 
-| Servicio                | Dirección                         | Descripción                          |
-| ----------------------- | --------------------------------- | ------------------------------------ |
-| Nginx                   | http://192.168.10.11/             | Página web principal                 |
-| Node Exporter (Server)  | http://192.168.10.11:9100/metrics | Métricas del servidor                |
-| Node Exporter (Monitor) | http://192.168.10.12:9100/metrics | Métricas del monitor                 |
-| Prometheus              | http://192.168.10.12:9090/        | Panel de métricas                    |
-| Grafana                 | http://192.168.10.12:3000/        | Panel de visualización (admin/admin) |
+| Servicio                | Dirección                         | Descripción                              |
+| ----------------------- | --------------------------------- | ---------------------------------------- |
+| Nginx                   | http://192.168.10.11/             | Página web principal                     |
+| Node Exporter (Server)  | http://192.168.10.11:9100/metrics | Métricas del servidor                    |
+| Node Exporter (Monitor) | http://192.168.10.12:9100/metrics | Métricas del monitor                     |
+| Prometheus              | http://192.168.10.12:9090/        | Panel de métricas / targets y consultas  |
+| Grafana                 | http://192.168.10.12:3000/        | Panel y Dashboards (admin/admin)         |
+| Blackbox Exporter       | http://192.168.10.12:9115/metrics | Probing HTTP externo (latencia de Nginx) |
 
 ---
 
 ## Objetivo
 
-Desplegar 3 VMs en una red privada 192.168.10.0/24:
+#### Desplegar 3 VMs en una red privada 192.168.10.0/24:
 
-- control (192.168.10.10) – nodo de apoyo (opcional)
-- server (192.168.10.11) – Nginx + Node Exporter
-- monitor (192.168.10.12) – Prometheus + Grafana + Node Exporter
+- control (192.168.10.10) – nodo de apoyo con JMeter (pruebas de carga).
+- server (192.168.10.11) – Nginx + Node Exporter.
+- monitor (192.168.10.12) – Prometheus + Grafana + Node Exporter + Blackbox Exporter.
 
----
+## Descripción General
 
-## Multi-provider (Windows/macOS/Linux)
+El proyecto **DataExplorer** consiste en la creación de un entorno de virtualización automatizado utilizando **Vagrant** y **Ansible**, con el despliegue de servicios modernos de administración y monitoreo:
 
-- Windows/macOS (VirtualBox): usa la box ubuntu/jammy64.
-- Linux (KVM/libvirt): usa la box generic/ubuntu2204.
+- **Nginx** como servidor web.
+- **Prometheus** para la recolección de métricas.
+- **Grafana** para la visualización de datos.
+- **Node Exporter** para obtener métricas del sistema.
 
-El mismo repo funciona para ambos; para SSH usamos el ssh-config de Vagrant (portable), así no hardcodeamos rutas de llaves.
+Este entorno se compone de **tres máquinas virtuales** interconectadas en la misma red privada.
+
+##### Todo el entorno se levanta y verifica con dos comandos:
+
+```
+vagrant up
+```
+
+```
+ansible-playbook -i provisioning/inventory/hosts.ini provisioning/site.yml provisioning/verify.yml -b
+```
 
 ---
 

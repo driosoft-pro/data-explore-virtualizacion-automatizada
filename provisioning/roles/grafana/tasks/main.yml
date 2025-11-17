@@ -37,3 +37,33 @@
     state: started
     enabled: true
   become: true
+
+- name: Crear directorio de dashboards de Grafana
+  file:
+    path: /var/lib/grafana/dashboards
+    state: directory
+    owner: grafana
+    group: grafana
+    mode: "0755"
+
+- name: Copiar configuración de provisioning de dashboards
+  copy:
+    src: dashboards.yml
+    dest: /etc/grafana/provisioning/dashboards/dataexplorer.yml
+    owner: root
+    group: grafana
+    mode: "0644"
+
+- name: Copiar dashboard DataExplorer
+  copy:
+    src: dashboards/dataexplorer-dashboard.json
+    dest: /var/lib/grafana/dashboards/dataexplorer-dashboard.json
+    owner: grafana
+    group: grafana
+    mode: "0644"
+
+- name: Reiniciar Grafana para aplicar dashboards
+  systemd:
+    name: grafana-server
+    state: restarted
+    enabled: true
