@@ -50,8 +50,7 @@ Este entorno se compone de **tres máquinas virtuales** interconectadas en la mi
 ```
 DataExplorer/
 ├─ docs/
-│  ├─ proyectoFinal.pdf
-│  └─ RequerimientosProyectoFinalDataExplorer.pdf
+│  └─ DocumentacionProyectoFinal.pdf
 ├─ Vagrantfile
 ├─ provisioning/
 │  ├─ inventory/
