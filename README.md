@@ -81,11 +81,11 @@ DataExplorer/
 
 ### Clonar Repositorio y Proyecto
 
-```bash
+```
 git clone git@github.com:driosoft-pro/data-explore-virtualizacion-automatizada.git
 ```
 
-```bash
+```
 cd data-explore-virtualizacion-automatizada
 ```
 
@@ -93,59 +93,85 @@ cd data-explore-virtualizacion-automatizada
 
 - Windows/macOS:
 
-```bash
+```
 vagrant up
 ```
 
 - Linux (libvirt):
 
-```bash
+```
 VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up --provider=libvirt
+```
+
+## Mas opciones
+
+```
+vagrant up --no-parallel
+```
+
+### O
+
+```
+vagrant up control
+```
+
+```
+vagrant up monitor
+```
+
+```
+vagrant up server
 ```
 
 ### 2) Generar SSH config
 
 - Bash/Zsh:
 
-```bash
+```
 vagrant ssh-config control server monitor > .vagrant/ssh-config
 ```
 
 - Nushell:
 
-```nu
+```
 vagrant ssh-config control server monitor | save -f .vagrant/ssh-config
 ```
 
 - PowerShell:
 
-```powershell
-vagrant ssh-config control,server,monitor | Out-File -Encoding ascii .vagrant/ssh-config
+(Se debe ejecutar en 3 pasos, usando -Append para añadir la información)
+
+```
+vagrant ssh-config control | Out-File -Encoding ascii .vagrant/ssh-config
+```
+
+```
+vagrant ssh-config server | Out-File -Encoding ascii -Append .vagrant/ssh-config
+```
+
+```
+vagrant ssh-config monitor | Out-File -Encoding ascii -Append .vagrant/ssh-config
 ```
 
 ### 3) Validar inventario y conectividad
 
-```bash
+```
 ansible-inventory -i provisioning/inventory/hosts.ini --graph
 ```
 
-```bash
+```
 ansible -i provisioning/inventory/hosts.ini all -m ping
 ```
 
 ### 4) Provisionar
 
-```bash
-ansible-playbook -i provisioning/inventory/hosts.ini provisioning/site.yml -b --check --diff
 ```
-
-```bash
 ansible-playbook -i provisioning/inventory/hosts.ini provisioning/site.yml -b
 ```
 
 ### 5) Verificar servicios
 
-```bash
+```
 ansible-playbook -i provisioning/inventory/hosts.ini provisioning/verify.yml -b
 ```
 
@@ -157,19 +183,19 @@ ansible-playbook -i provisioning/inventory/hosts.ini provisioning/verify.yml -b
 
 ## Comandos útiles
 
-```bash
+```
 vagrant status
 ```
 
-```bash
+```
 vagrant reload
 ```
 
-```bash
+```
 vagrant halt
 ```
 
-```bash
+```
 vagrant destroy -f
 ```
 

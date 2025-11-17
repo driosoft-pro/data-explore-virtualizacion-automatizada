@@ -18,10 +18,10 @@ Vagrant.configure("2") do |config|
     c.vm.network "private_network", ip: "192.168.10.10"
 
     c.vm.provider "virtualbox" do |vb|
-      vb.memory = 1024; vb.cpus = 2; vb.name = "DE-control"
+      vb.memory = 1024; vb.cpus = 2; vb.name = "Control"
     end
     c.vm.provider "libvirt" do |lv|
-      lv.memory = 1024; lv.cpus = 2; lv.title = "DE-control"
+      lv.memory = 1024; lv.cpus = 2; lv.title = "Control"
     end
   end
 
@@ -32,10 +32,10 @@ Vagrant.configure("2") do |config|
     s.vm.network "private_network", ip: "192.168.10.11"
 
     s.vm.provider "virtualbox" do |vb|
-      vb.memory = 2048; vb.cpus = 2; vb.name = "DE-server"
+      vb.memory = 2048; vb.cpus = 2; vb.name = "Server"
     end
     s.vm.provider "libvirt" do |lv|
-      lv.memory = 2048; lv.cpus = 2; lv.title = "DE-server"
+      lv.memory = 2048; lv.cpus = 2; lv.title = "Server"
     end
   end
 
@@ -46,10 +46,10 @@ Vagrant.configure("2") do |config|
     m.vm.network "private_network", ip: "192.168.10.12"
 
     m.vm.provider "virtualbox" do |vb|
-      vb.memory = 3072; vb.cpus = 2; vb.name = "DE-monitor"
+      vb.memory = 3072; vb.cpus = 2; vb.name = "Monitor"
     end
     m.vm.provider "libvirt" do |lv|
-      lv.memory = 3072; lv.cpus = 2; lv.title = "DE-monitor"
+      lv.memory = 3072; lv.cpus = 2; lv.title = "Monitor"
     end
   end
 end
